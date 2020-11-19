@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="WINDOWS-1252" standalone="no"?>
+<jardesc>
+    <jar path="ReadyCLI/jar/readycli-v1.0.jar"/>
+    <options buildIfNeeded="true" compress="true" descriptionLocation="/ReadyCLI/export-library.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="true" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
+    <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
+    <selectedProjects/>
+    <manifest generateManifest="true" manifestLocation="" manifestVersion="1.0" reuseManifest="false" saveManifest="false" usesManifest="true">
+        <sealing sealJar="true">
+            <packagesToSeal/>
+            <packagesToUnSeal/>
+        </sealing>
+    </manifest>
+    <selectedElements exportClassFiles="true" exportJavaFiles="true" exportOutputFolder="false">
+        <folder path="/ReadyCLI/docs"/>
+        <file path="/ReadyCLI/LICENSE"/>
+        <file path="/ReadyCLI/NOTICE.txt"/>
+        <javaElement handleIdentifier="=ReadyCLI/src&lt;readycli"/>
+        <file path="/ReadyCLI/README.md"/>
+    </selectedElements>
+</jardesc>
