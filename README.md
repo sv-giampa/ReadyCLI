@@ -134,8 +134,11 @@ ReadyCLI is very easy and intuitive to use, but it is also very powerful. ReadyC
 A command should parse two main types of elements:
 
 - Required arguments: are those values that are necessary to the execution of the command, e.g. the source file name and the destination file name for a file copy command;
-- options: allows to specify other collateral parameters or flags, e.g. to say if the source file should be removed after a file copy; these parameters always have a predetermined default value used in the case they are not specified by the user.
+- Options: allows to specify other collateral parameters or flags, e.g. to say if the source file should be removed after a file copy; these parameters always have a predetermined default value used in the case they are not specified by the user.
 
 ReadyCLI allows to create both required arguments and options, and to store them in a simple data structure to be accessed easily, allowing to setup default values and to create proper documentation for each of them. The data structure which will contain all the parsed arguments and options is called Command Context. It represents the runtime context of a command, that is composed by some elements such as the actual values of arguments and options parameters, the input and output streams used to interact with the user (who can be on the standard output, on a socket, etc.).
 
 The Command Context built during the command-line parsing is then passed to the Command Executor, that is a developer-defined object that uses the Command Context and executes the code of the command. The Command Executor can be specified as a Lambda Expression accepting the Command Context as single argument. It is specified at the moment the command is built (see examples above).
+
+# Full documentation
+The full documentation of the library can be found in the  __docs__  folder or in the [GitHub Pages](https://sv-giampa.github.io/ReadyCLI/index.html).

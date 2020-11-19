@@ -51,6 +51,9 @@ import java.util.TreeMap;
  * <li>Options: optional parameters or flags that have a changeable default
  * value (e.g. a parameter that indicates the name of a log file, or a flag that
  * tells if the source file must be deleted after a copy)
+ * <li>Sub-commands: are commands nested in the current one. Invoking a
+ * sub-command is equivalent to invoke another independent command with the
+ * simple difference that its first level name is the current one.
  * </ul>
  * 
  * <h2>Usage String</h2>
@@ -107,8 +110,9 @@ public final class Command implements Serializable {
 	private Command() {}
 
 	/**
-	 * Creates a new command as the {@link #create(String, String, String)} does.
-	 * This method accepts a class object used to build the usage string as<br>
+	 * Creates a new command as the {@link #create(String, String, String)} method
+	 * does. This method accepts a class object used to build the usage string
+	 * as<br>
 	 * <code>java [java-options] class-name</code><br>
 	 * <br>
 	 * See {@link Command} for more details about usage strings.
@@ -125,8 +129,8 @@ public final class Command implements Serializable {
 	}
 
 	/**
-	 * Creates a new command as the {@link #create(String, String, String)} does.
-	 * This method sets the usage string to be equal to the command name.<br>
+	 * Creates a new command as the {@link #create(String, String, String)} method
+	 * does. This method sets the usage string to be equal to the command name.<br>
 	 * <br>
 	 * See {@link Command} for more details about usage strings.
 	 * 

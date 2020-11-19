@@ -22,6 +22,16 @@ import java.io.PrintStream;
 import java.util.Collections;
 import java.util.Map;
 
+/**
+ * Collects all the information that results from command parsing, i.e. actual
+ * values of the required arguments and options, and the input and the output
+ * streams used to interact with the user. The instances of this class are
+ * created by the {@link Command} class and submitted to a
+ * {@link CommandExecutor} when the command is parsed.
+ * 
+ * @author Salvatore Giampa'
+ *
+ */
 public final class CommandContext {
 
 	/**
