@@ -44,7 +44,7 @@ The followings are samples of command-line to use the command parser defined abo
 java -cp overview-args.jar examples.readycli.overview.OverviewArgs path/to/a/file --myflag --myoption "p1 value" p2-value
 
 # show the command help
-java -cp overview-args.jar examples.readycli.overview.OverviewArgs -?
+java -cp overview-args.jar examples.readycli.overview.OverviewArgs ?
 
 # executes the sub-command "my-sub-command"
 java -cp overview-args.jar examples.readycli.overview.OverviewArgs my-sub-command path/to/a/text-file
@@ -93,13 +93,13 @@ The following is an execution example of the CLI shown above:
 
 ~~~
 CLI Overview
-Insert "?" to show available commands
+Insert '?' to show available commands
 insert a command> ?
 Available commands
 	exit: Exits the program
 	my-command: A command for my CLI
 	set-prompt: Set a prompt for my CLI
-To see detailed documentation about a command, specify -? after a command name.
+To see detailed documentation about a command, specify '?' after a command name.
 
 insert a command> my-command
 arguments: {}
@@ -110,7 +110,7 @@ arguments: {}
 options: {opt={flag=true, parameters={my-param=25}}}
 insert a command> set-prompt "new command prompt"
 
-new command prompt> my-command -?
+new command prompt> my-command ?
 Command documentation
 Command name: my-command
 Command description: A command for my CLI
@@ -133,12 +133,12 @@ ReadyCLI is very easy and intuitive to use, but it is also very powerful. ReadyC
 ## Main elements of a command: Arguments, Options and CommandExecutor
 A command should parse two main types of elements:
 
-- Required arguments: are those values that are necessary to the execution of the command, e.g. the source file name and the destination file name for a file copy command;
-- Options: allows to specify other collateral parameters or flags, e.g. to say if the source file should be removed after a file copy; these parameters always have a predetermined default value used in the case they are not specified by the user.
+- Required arguments: are those values that are necessary to the execution of the command (e.g. the source file name and the destination file name for a file copy command);
+- Options: allows to specify other parameters or flags (e.g. to say if the source file should be removed after a file copy); these parameters always have a predetermined default value used in the case they are not specified by the user.
 
 ReadyCLI allows to create both required arguments and options, and to store them in a simple data structure to be accessed easily, allowing to setup default values and to create proper documentation for each of them. The data structure which will contain all the parsed arguments and options is called Command Context. It represents the runtime context of a command, that is composed by some elements such as the actual values of arguments and options parameters, the input and output streams used to interact with the user (who can be on the standard output, on a socket, etc.).
 
-The Command Context built during the command-line parsing is then passed to the Command Executor, that is a developer-defined object that uses the Command Context and executes the code of the command. The Command Executor can be specified as a Lambda Expression accepting the Command Context as single argument. It is specified at the moment the command is built (see examples above).
+The [Command Context](https://sv-giampa.github.io/ReadyCLI/readycli/CommandContext.html) built during the command-line parsing is then passed to the [Command Executor](https://sv-giampa.github.io/ReadyCLI/readycli/CommandExecutor.html), that is a developer-defined object that uses the Command Context and executes the code of the command. The [Command Executor](https://sv-giampa.github.io/ReadyCLI/readycli/CommandExecutor.html) can be specified as a Lambda Expression accepting the Command Context as single argument. It is specified at the moment the command is built (see examples above).
 
 # Full documentation
 The full documentation of the library can be found in the  __docs__  folder or in the [GitHub Pages](https://sv-giampa.github.io/ReadyCLI/index.html).
