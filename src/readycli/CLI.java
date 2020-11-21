@@ -102,7 +102,7 @@ public final class CLI implements Serializable {
 	 */
 	public synchronized CLI addCommand(Command command) {
 		if (commands.containsKey(command.getName()))
-			throw new IllegalStateException(String.format("Command name \"%s\" already assigned.", command.getName()));
+			throw new IllegalStateException(String.format("Command name \"%s\" already assigned.", command.getName())); //$NON-NLS-1$
 		commands.put(command.getName(), command);
 		return this;
 	}
@@ -166,12 +166,14 @@ public final class CLI implements Serializable {
 	 * @param output the out stream on which the list of command must be wrote.
 	 */
 	public void printHelp(PrintStream output) {
-		output.println("Available commands");
+		output.println(Messages.getString("CLI.1")); //$NON-NLS-1$
 		for (Entry<String, Command> entry : commands.entrySet()) {
 			Command command = entry.getValue();
-			output.printf("\t%s: %s\n", command.getName(), command.getDescription());
+
+			output.printf(Messages.getString("CLI.2"), command.getName(), command.getDescription(), //$NON-NLS-1$
+					command.getDocumentationAliases());
 		}
-		output.println("To see detailed documentation about a command, type '?' after a command name.");
+		output.println(Messages.getString("CLI.3")); //$NON-NLS-1$
 	}
 
 	/**
@@ -203,7 +205,7 @@ public final class CLI implements Serializable {
 	public void execute(PrintStream output, InputStream input) {
 		Scanner in = new Scanner(input);
 		output.println(title);
-		output.println("Insert '?' to show available commands");
+		output.println(Messages.getString("CLI.4")); //$NON-NLS-1$
 		while (!Thread.currentThread()
 				.isInterrupted()) {
 			if (commandPrompt != null)
@@ -211,15 +213,15 @@ public final class CLI implements Serializable {
 			if (!in.hasNextLine())
 				break;
 			String commandLine = in.nextLine();
-			if (!"".equals(commandLine)) {
+			if (!"".equals(commandLine)) { //$NON-NLS-1$
 				Scanner lineScanner = new Scanner(commandLine);
 				String commandName = lineScanner.next();
-				String commandArgs = "";
+				String commandArgs = ""; //$NON-NLS-1$
 				if (lineScanner.hasNextLine())
 					commandArgs = lineScanner.nextLine();
 				lineScanner.close();
 
-				if (commandName.equals("?")) {
+				if (commandName.equals("?")) { //$NON-NLS-1$
 					printHelp(output);
 				} else {
 					Command command = null;
@@ -229,7 +231,7 @@ public final class CLI implements Serializable {
 					if (command != null) {
 						command.execute(commandArgs, output, input);
 					} else {
-						output.println("Unknown command " + commandName);
+						output.println(Messages.getString("CLI.5") + commandName); //$NON-NLS-1$
 					}
 				}
 			}

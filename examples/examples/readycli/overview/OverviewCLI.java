@@ -25,7 +25,7 @@ public class OverviewCLI {
 	public static void main(String[] args) {
 		CLI cli = CLI.create("CLI Overview", "insert a command> ");
 
-		cli.addCommand(Command.create("my-command", "A command for my CLI")
+		cli.addCommand(Command.forCLI("my-command", "A command for my CLI")
 				.addOption(Option.create("opt", "An option of my-command")
 						.addAlias("o")
 						.addParameter("my-param", "A parameter for --opt", "my default value")
@@ -41,7 +41,7 @@ public class OverviewCLI {
 							// access the CLI itself and modifies it from this lambda
 							cli.setCommandPrompt(newPrompt + "> ");
 						})) // end of "set-prompt" command
-				.addCommand(Command.create("exit", "Exits the program")
+				.addCommand(Command.forCLI("exit", "Exits the program")
 						.build(context -> System.exit(0))); // end of exit command
 
 		cli.execute(); // executes the CLI on the standard I/O

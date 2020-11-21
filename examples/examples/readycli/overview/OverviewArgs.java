@@ -22,14 +22,14 @@ import readycli.Option;
 
 public class OverviewArgs {
 	public static void main(String[] args) {
-		Command.create("command-name", "command-description")
+		Command.forCLI("command-name", "command-description")
 				.addRequiredArgument("file-name", "in file name") // a required argument
 				.addFlag("myflag", "an example flag") // an optional flag (true if specified, false otherwise)
 				.addOption(Option.create("myoption", "an example option") // an option
 						.addParameter("p1", "parameter 1 of --myoption", "default-value-of-p1")
 						.addParameter("p2", "parameter 2 of --myoption", "myoption-p2-default")
 						.build())
-				.addSubCommand(Command.create("my-sub-command", "an example sub-command")
+				.addSubCommand(Command.forCLI("my-sub-command", "an example sub-command")
 						.addRequiredArgument("text-file", "a required argument of my-sub-command")
 						.build(context -> {
 							String textFile = context.getArgument("text-file");

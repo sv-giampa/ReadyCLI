@@ -36,6 +36,8 @@ import java.util.Map;
  *
  */
 public final class Option implements Serializable {
+	private static final long serialVersionUID = -1669795308156579822L;
+
 	private String name;
 	private ArrayList<String> aliases = new ArrayList<>();
 	private String description;

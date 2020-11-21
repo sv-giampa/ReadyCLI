@@ -26,7 +26,7 @@ public class CLIUseCase {
 		CLI cli = CLI.create("CLIUseCase", "command> ");
 
 		cli.setCommandPrompt("insert command> ")
-				.addCommand(Command.create("my-command", "A command for my CLI")
+				.addCommand(Command.forCLI("my-command", "A command for my CLI")
 						.addOption(Option.create("opt", "An option of my-command")
 								.addParameter("my-param", "A parameter for opt", "my default value")
 								.build())
@@ -36,13 +36,13 @@ public class CLIUseCase {
 							context.out.println("opt -> my-param=" + context.getOption("opt")
 									.get("my-param"));
 						})) // end of my-command command
-				.addCommand(Command.create("set-prompt", "Set a prompt for my CLI")
+				.addCommand(Command.forCLI("set-prompt", "Set a prompt for my CLI")
 						.addRequiredArgument("new-prompt", "The new prompt to set")
 						.build(context -> {
 							String newPrompt = context.getArgument("new-prompt");
 							cli.setCommandPrompt(newPrompt + "> ");
 						})) // end of set-prompt command
-				.addCommand(Command.create("exit", "Exits the program")
+				.addCommand(Command.forCLI("exit", "Exits the program")
 						.build(context -> System.exit(0))); // end of exit command
 
 		cli.execute(System.out, System.in);

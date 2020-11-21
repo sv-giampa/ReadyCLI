@@ -16,7 +16,7 @@ public class MiniShell {
 		CLI cli = CLI.create("MiniShell v1.0.0");
 
 		cli.setCommandPrompt(currentDir.getCanonicalPath() + "> ")
-				.addCommand(Command.create("cd", "Changes the current directory")
+				.addCommand(Command.forCLI("cd", "Changes the current directory")
 						.addRequiredArgument("path", "The new current directory path")
 						.build(ctx -> {
 							Path path = Paths.get(ctx.getArgument("path"));
@@ -36,7 +36,7 @@ public class MiniShell {
 								ctx.out.printf("Error: the path '%s' is not an existing directory.\n", path);
 							}
 						}))
-				.addCommand(Command.create("touch", "Creates a new empty file")
+				.addCommand(Command.forCLI("touch", "Creates a new empty file")
 						.addRequiredArgument("path", "The file path")
 						.build(ctx -> {
 							String path = ctx.getArgument("path");
@@ -59,15 +59,15 @@ public class MiniShell {
 								ctx.out.println("Error: the file cannot be created for some reason.");
 							}
 						}))
-				.addCommand(Command.create("ls", "List files in the current directory")
+				.addCommand(Command.forCLI("ls", "List files in the current directory")
 						.build(ctx -> {
 							for (File file : currentDir.listFiles())
 								ctx.out.printf("\t%s\t%s\n",
 										file.isFile() ? "FILE" : file.isDirectory() ? "DIR" : "DEV", file.getName());
 						}))
-				.addCommand(Command.create("exit", "Exits from MiniShell")
+				.addCommand(Command.forCLI("exit", "Exits from MiniShell")
 						.build(context -> System.exit(0))) // end of exit command
-				.addCommand(Command.create("exec", "Executes a command for the native runtime")
+				.addCommand(Command.forCLI("exec", "Executes a command for the native runtime")
 						.addRequiredArgument("command", "The command to execute")
 						.build(ctx -> {
 							String command = ctx.getArgument("command");

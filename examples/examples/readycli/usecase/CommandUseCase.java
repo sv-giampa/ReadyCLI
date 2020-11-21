@@ -22,7 +22,7 @@ import readycli.Option;
 
 public class CommandUseCase {
 	public static void main(String[] args) {
-		Command.create("example-command", "an example command", "")
+		Command.forMain("example-command", "an example command")
 				.addRequiredArgument("file-name", "in file name")
 				.addFlag("myflag", "an example flag")
 				.addOption(Option.create("optarg", "an example of optional argument")
@@ -33,7 +33,7 @@ public class CommandUseCase {
 						.addParameter("p1", "parameter 1 of myoption", "35")
 						.addParameter("p2", "parameter 2 of myoption", "myoption-p2-default")
 						.build())
-				.addSubCommand(Command.create("my-sub-command", "an example sub-command")
+				.addSubCommand(Command.forCLI("my-sub-command", "an example sub-command")
 						.addRequiredArgument("text-file", "a required argument of my-sub-command")
 						.build(context -> {
 							context.out.println("arguments: " + context.arguments);
@@ -46,6 +46,6 @@ public class CommandUseCase {
 					context.out.println("arguments: " + context.arguments);
 					context.out.println("options: " + context.options);
 				})
-				.execute("? path/to/file -opt \"the alias works\"");
+				.execute("-? path/to/file -opt \"the alias works\"");
 	}
 }
