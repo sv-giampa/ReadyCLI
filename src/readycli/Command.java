@@ -518,96 +518,103 @@ public final class Command implements Serializable {
 			String fullCommand = sb.toString();
 
 			// print command description
-			output.println(Messages.getString("Command.2")); //$NON-NLS-1$
-			output.print('\t' + name + ' ' + '-' + ' ');
-			output.println(description);
-
-			// print usage
-			String usageMsg = Messages.getString("Command.11"); //$NON-NLS-1$
-
-			output.println(usageMsg);
-			if (commandExecutor != null) {
-				output.printf("\t%s", fullCommand); // $NON-NLS-2$ //$NON-NLS-1$
-				for (RequiredArgument reqArg : requiredArguments)
-					output.printf(" <%s>", reqArg.getName()); //$NON-NLS-1$
-
-				if (!options.isEmpty()) {
-					Set<Option> alreadyPrinted = new HashSet<>();
-					for (Entry<String, Option> entry : options.entrySet()) {
-						Option option = entry.getValue();
-						if (!alreadyPrinted.contains(option)) {
-							output.printf(" [--%s", option.getName()); //$NON-NLS-1$
-
-							for (Option.Parameter param : option.getParameters())
-								output.printf(" <%s>", param.getName()); //$NON-NLS-1$
-							output.printf("]", option.getName()); //$NON-NLS-1$
-							alreadyPrinted.add(option);
-						}
-					}
-				}
+			{
+				output.println(Messages.getString("Command.2")); //$NON-NLS-1$
+				output.print('\t' + name + ' ' + '-' + ' ');
+				output.println(description);
 				output.println();
-			} else {
-				output.println(Messages.getString("Command.13")); //$NON-NLS-1$
 			}
 
-			if (subCommands.size() > 0) {
-				String aSubCommandMsg = Messages.getString("Command.14"); //$NON-NLS-1$
-				String subCommandArgumentsMsg = Messages.getString("Command.15"); //$NON-NLS-1$
-				output.printf("%s \t %s {<%s> <%s ...>}", usageMsg, fullCommand, aSubCommandMsg, //$NON-NLS-1$
-						subCommandArgumentsMsg);
+			// print usage
+			{
+				String usageMsg = Messages.getString("Command.11"); //$NON-NLS-1$
+
+				output.println(usageMsg);
+				if (commandExecutor != null) {
+					output.printf("\t%s", fullCommand); // $NON-NLS-2$ //$NON-NLS-1$
+					for (RequiredArgument reqArg : requiredArguments)
+						output.printf(" <%s>", reqArg.getName()); //$NON-NLS-1$
+
+					if (!options.isEmpty()) {
+						Set<Option> alreadyPrinted = new HashSet<>();
+						for (Entry<String, Option> entry : options.entrySet()) {
+							Option option = entry.getValue();
+							if (!alreadyPrinted.contains(option)) {
+								output.printf(" [--%s", option.getName()); //$NON-NLS-1$
+
+								for (Option.Parameter param : option.getParameters())
+									output.printf(" <%s>", param.getName()); //$NON-NLS-1$
+								output.printf("]", option.getName()); //$NON-NLS-1$
+								alreadyPrinted.add(option);
+							}
+						}
+					}
+					output.println();
+				} else {
+					output.println(Messages.getString("Command.13")); //$NON-NLS-1$
+				}
+
+				if (subCommands.size() > 0) {
+					String aSubCommandMsg = Messages.getString("Command.14"); //$NON-NLS-1$
+					String subCommandArgumentsMsg = Messages.getString("Command.15"); //$NON-NLS-1$
+					output.printf("%s \t %s {<%s> <%s ...>}", usageMsg, fullCommand, aSubCommandMsg, //$NON-NLS-1$
+							subCommandArgumentsMsg);
+					output.println();
+				}
 				output.println();
 			}
 
 			// print required arguments and their descriptions
 			if (commandExecutor != null && requiredArguments.size() > 0) {
-				output.println();
 				output.println(Messages.getString("Command.17")); //$NON-NLS-1$
 				int index = 1;
 				for (RequiredArgument reqArg : requiredArguments) {
 					output.printf("\t(%s)\t<%s>:  %s\n", index, reqArg.getName(), reqArg.getDescription()); //$NON-NLS-1$
 					index++;
 				}
+				output.println();
 			}
 
 			// print options, their descriptions, their parameters and the
 			// descriptions of their parameters
+			if (documentationAliases.size() > 0 || (commandExecutor != null && options.size() > 0)) {
+				output.println(Messages.getString("Command.18")); //$NON-NLS-1$
 
-			output.println();
-			output.println(Messages.getString("Command.18")); //$NON-NLS-1$
-
-			if (documentationAliases.size() > 0) {
-				output.print('\t');
-				boolean firstDocAlias = true;
-				for (String alias : documentationAliases) {
-					if (!firstDocAlias) {
-						output.print(", "); //$NON-NLS-1$
-					}
-					firstDocAlias = false;
-					output.printf("%s", alias); //$NON-NLS-1$
-				}
-				output.printf(":  %s\n\n", Messages.getString("Command.26")); //$NON-NLS-1$ //$NON-NLS-2$
-			}
-
-			if (commandExecutor != null && options.size() > 0) {
-				Set<Option> alreadyPrinted = new HashSet<>();
-				for (Option option : options.values())
-					if (!alreadyPrinted.contains(option)) {
-						output.printf("\t--%s", option.getName()); //$NON-NLS-1$
-						for (String alias : option.getAliases())
-							output.printf(", -%s", alias); //$NON-NLS-1$
-						output.printf(":  %s\n\n", option.getDescription()); //$NON-NLS-1$
-
-						if (!option.getParameters()
-								.isEmpty()) {
-							output.println(Messages.getString("Command.22")); //$NON-NLS-1$
-							int i = 1;
-							for (Option.Parameter param : option.getParameters())
-								output.printf("\t\t(%s)\t%s:  %s (deafult value: \"%s\")\n", i++, param.getName(), //$NON-NLS-1$
-										param.getDescription(), param.getDefaultValue());
+				if (documentationAliases.size() > 0) {
+					output.print('\t');
+					boolean firstDocAlias = true;
+					for (String alias : documentationAliases) {
+						if (!firstDocAlias) {
+							output.print(", "); //$NON-NLS-1$
 						}
-						output.println();
-						alreadyPrinted.add(option);
+						firstDocAlias = false;
+						output.printf("%s", alias); //$NON-NLS-1$
 					}
+					output.printf(":  %s\n\n", Messages.getString("Command.26")); //$NON-NLS-1$ //$NON-NLS-2$
+				}
+
+				if (commandExecutor != null && options.size() > 0) {
+					Set<Option> alreadyPrinted = new HashSet<>();
+					for (Option option : options.values())
+						if (!alreadyPrinted.contains(option)) {
+							output.printf("\t--%s", option.getName()); //$NON-NLS-1$
+							for (String alias : option.getAliases())
+								output.printf(", -%s", alias); //$NON-NLS-1$
+							output.printf(":  %s", option.getDescription()); //$NON-NLS-1$
+							output.println();
+
+							if (!option.getParameters()
+									.isEmpty()) {
+								output.println(Messages.getString("Command.22")); //$NON-NLS-1$
+								int i = 1;
+								for (Option.Parameter param : option.getParameters())
+									output.printf("\t\t(%s)\t%s:  %s (deafult value: \"%s\")\n", i++, param.getName(), //$NON-NLS-1$
+											param.getDescription(), param.getDefaultValue());
+							}
+							output.println();
+							alreadyPrinted.add(option);
+						}
+				}
 			}
 
 			// print sub-commands and their descriptions but not their arguments
@@ -623,8 +630,8 @@ public final class Command implements Serializable {
 				}
 				output.println();
 				output.println(Messages.getString("Command.0")); //$NON-NLS-1$
+				output.println();
 			}
-			output.println();
 
 		}
 		return ExitCause.HELP_FLAG;

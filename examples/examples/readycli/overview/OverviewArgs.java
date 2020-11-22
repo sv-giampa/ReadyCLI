@@ -22,7 +22,7 @@ import readycli.Option;
 
 public class OverviewArgs {
 	public static void main(String[] args) {
-		Command.forCLI("command-name", "command-description")
+		Command.forMain("command-name", "command-description")
 				.addRequiredArgument("file-name", "in file name") // a required argument
 				.addFlag("myflag", "an example flag") // an optional flag (true if specified, false otherwise)
 				.addOption(Option.create("myoption", "an example option") // an option

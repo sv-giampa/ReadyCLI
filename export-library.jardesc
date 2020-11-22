@@ -11,10 +11,8 @@
         </sealing>
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="true" exportOutputFolder="false">
-        <folder path="/ReadyCLI/docs"/>
+        <javaElement handleIdentifier="=ReadyCLI/src"/>
         <file path="/ReadyCLI/LICENSE"/>
         <file path="/ReadyCLI/NOTICE.txt"/>
-        <javaElement handleIdentifier="=ReadyCLI/src"/>
-        <file path="/ReadyCLI/README.md"/>
     </selectedElements>
 </jardesc>

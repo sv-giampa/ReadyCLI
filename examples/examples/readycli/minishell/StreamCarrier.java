@@ -35,11 +35,16 @@ public class StreamCarrier {
 					} finally {
 						mutex.unlock();
 					}
-					int n = in.read(buffer);
-					if (n == -1)
-						break;
-					out.write(buffer, 0, n);
-					out.flush();
+					if (in.available() > 0) {
+						int n = in.read(buffer);
+						if (n == -1)
+							break;
+						out.write(buffer, 0, n);
+						out.flush();
+					} else {
+						Thread.sleep(5);
+						out.flush();
+					}
 				}
 			} catch (InterruptedException e) {
 				// interrupted

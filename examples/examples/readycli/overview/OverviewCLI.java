@@ -17,12 +17,15 @@
 
 package examples.readycli.overview;
 
+import java.util.Locale;
+
 import readycli.CLI;
 import readycli.Command;
 import readycli.Option;
 
 public class OverviewCLI {
 	public static void main(String[] args) {
+		Locale.setDefault(Locale.ENGLISH);
 		CLI cli = CLI.create("CLI Overview", "insert a command> ");
 
 		cli.addCommand(Command.forCLI("my-command", "A command for my CLI")
@@ -34,7 +37,7 @@ public class OverviewCLI {
 					context.out.println("arguments: " + context.arguments); // print required arguments
 					context.out.println("options: " + context.options); // print options
 				})) // end of "my-command" command
-				.addCommand(Command.create("set-prompt", "Set a prompt for my CLI", "set-prompt")
+				.addCommand(Command.forCLI("set-prompt", "Set a prompt for my CLI")
 						.addRequiredArgument("new-prompt", "The new prompt to set")
 						.build(context -> { // build the "set-prompt" command
 							String newPrompt = context.getArgument("new-prompt");

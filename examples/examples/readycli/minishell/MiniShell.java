@@ -80,15 +80,12 @@ public class MiniShell {
 							try {
 								Process process = Runtime.getRuntime()
 										.exec(command, null, currentDir);
-
 								// stdin
-								StreamCarrier outThread = new StreamCarrier(ctx.in, process.getOutputStream(), 1);
-
+								StreamCarrier outThread = new StreamCarrier(ctx.in, process.getOutputStream());
 								// stdout
-								StreamCarrier inThread = new StreamCarrier(process.getInputStream(), ctx.out, 1);
-
+								StreamCarrier inThread = new StreamCarrier(process.getInputStream(), ctx.out);
 								// stderr
-								StreamCarrier errThread = new StreamCarrier(process.getErrorStream(), ctx.out, 1);
+								StreamCarrier errThread = new StreamCarrier(process.getErrorStream(), ctx.out);
 
 								process.waitFor();
 
