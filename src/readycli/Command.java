@@ -352,28 +352,14 @@ public final class Command implements Serializable {
 		Map<String, String> args = new HashMap<>();
 		Map<String, OptionValues> opts = new HashMap<>();
 
-		// required arguments
-		int index = 0;
-		for (; index < arguments.size() && index < requiredArguments.size(); index++) {
-			String value = arguments.get(index);
-			args.put(requiredArguments.get(index)
-					.getName(), value);
-		}
-
-		if (index < requiredArguments.size()) {
-			output.println(Messages.getString("Command.6") + ": " + requiredArguments.get(index) //$NON-NLS-1$//$NON-NLS-2$
-					.getName());
-			return ExitCause.ERROR_EXPECTED_ARGUMENT;
-		}
-
 		Set<Option> foundOptions = new HashSet<>();
 
-		// options and subcommands
-		for (; index < arguments.size(); index++) {
+		int argIndex = 0;
+		for (int index = 0; index < arguments.size(); index++) {
 			String key = arguments.get(index);
 
 			if (options.containsKey(key)) {
-				// process option
+				// option
 				Option option = options.get(key);
 				int nParams = option.getParameters()
 						.size();
@@ -388,6 +374,10 @@ public final class Command implements Serializable {
 					output.printf(Messages.getString("Command.7"), expectedParam.getName(), //$NON-NLS-1$
 							option.getName());
 					output.println();
+					output.println();
+					output.printf(Messages.getString("Command.3"), //$NON-NLS-1$
+							documentationAliases);
+					output.println();
 					return ExitCause.ERROR_EXPECTED_OPTION_PARAMETER;
 				}
 
@@ -395,11 +385,31 @@ public final class Command implements Serializable {
 				opts.put(option.getName(), option.process(values));
 				foundOptions.add(option);
 				index = end - 1;
+			} else if (argIndex < requiredArguments.size()) {
+				// required argument
+				String value = arguments.get(index);
+				args.put(requiredArguments.get(argIndex++)
+						.getName(), value);
 			} else {
-				output.printf(Messages.getString("Command.8"), key, index); //$NON-NLS-1$
+				// unknown option
+				output.printf(Messages.getString("Command.8"), key, index); //$NON-NLS-1$ //$NON-NLS-2$
+				output.println();
+				output.println();
+				output.printf(Messages.getString("Command.3"), //$NON-NLS-1$
+						documentationAliases);
 				output.println();
 				return ExitCause.ERROR_UNEXPECTED_OPTION;
 			}
+		}
+
+		if (argIndex < requiredArguments.size()) {
+			output.println(Messages.getString("Command.6") + ": " + requiredArguments.get(argIndex) //$NON-NLS-1$//$NON-NLS-2$
+					.getName());
+			output.println();
+			output.printf(Messages.getString("Command.3"), //$NON-NLS-1$
+					documentationAliases);
+			output.println();
+			return ExitCause.ERROR_EXPECTED_ARGUMENT;
 		}
 
 		// process default values for unspecified options
@@ -508,13 +518,16 @@ public final class Command implements Serializable {
 			String fullCommand = sb.toString();
 
 			// print command description
+			output.println(Messages.getString("Command.2")); //$NON-NLS-1$
+			output.print('\t' + name + ' ' + '-' + ' ');
 			output.println(description);
 
 			// print usage
 			String usageMsg = Messages.getString("Command.11"); //$NON-NLS-1$
 
+			output.println(usageMsg);
 			if (commandExecutor != null) {
-				output.printf(usageMsg + " %s", fullCommand); // $NON-NLS-2$ //$NON-NLS-1$
+				output.printf("\t%s", fullCommand); // $NON-NLS-2$ //$NON-NLS-1$
 				for (RequiredArgument reqArg : requiredArguments)
 					output.printf(" <%s>", reqArg.getName()); //$NON-NLS-1$
 
@@ -558,27 +571,31 @@ public final class Command implements Serializable {
 
 			// print options, their descriptions, their parameters and the
 			// descriptions of their parameters
+
+			output.println();
+			output.println(Messages.getString("Command.18")); //$NON-NLS-1$
+
+			if (documentationAliases.size() > 0) {
+				output.print('\t');
+				boolean firstDocAlias = true;
+				for (String alias : documentationAliases) {
+					if (!firstDocAlias) {
+						output.print(", "); //$NON-NLS-1$
+					}
+					firstDocAlias = false;
+					output.printf("%s", alias); //$NON-NLS-1$
+				}
+				output.printf(":  %s\n\n", Messages.getString("Command.26")); //$NON-NLS-1$ //$NON-NLS-2$
+			}
+
 			if (commandExecutor != null && options.size() > 0) {
-				output.println();
-				output.println(Messages.getString("Command.18")); //$NON-NLS-1$
 				Set<Option> alreadyPrinted = new HashSet<>();
 				for (Option option : options.values())
 					if (!alreadyPrinted.contains(option)) {
-						output.printf("\t--%s:  %s\n", option.getName(), option.getDescription()); //$NON-NLS-1$
-						if (!option.getAliases()
-								.isEmpty()) {
-
-							if (option.getAliases()
-									.size() == 1)
-								output.print(Messages.getString("Command.19")); //$NON-NLS-1$
-							else
-								output.print(Messages.getString("Command.20")); //$NON-NLS-1$
-
-							for (String alias : option.getAliases()) {
-								output.printf(" -%s", alias); //$NON-NLS-1$
-							}
-							output.println();
-						}
+						output.printf("\t--%s", option.getName()); //$NON-NLS-1$
+						for (String alias : option.getAliases())
+							output.printf(", -%s", alias); //$NON-NLS-1$
+						output.printf(":  %s\n\n", option.getDescription()); //$NON-NLS-1$
 
 						if (!option.getParameters()
 								.isEmpty()) {
@@ -608,9 +625,6 @@ public final class Command implements Serializable {
 				output.println(Messages.getString("Command.0")); //$NON-NLS-1$
 			}
 			output.println();
-
-			output.printf(Messages.getString("Command.26"), //$NON-NLS-1$
-					getDocumentationAliases());
 
 		}
 		return ExitCause.HELP_FLAG;

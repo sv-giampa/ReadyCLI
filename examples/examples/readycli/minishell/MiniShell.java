@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 
 import readycli.CLI;
 import readycli.Command;
+import readycli.Option;
 
 public class MiniShell {
 
@@ -66,6 +67,10 @@ public class MiniShell {
 										file.isFile() ? "FILE" : file.isDirectory() ? "DIR" : "DEV", file.getName());
 						}))
 				.addCommand(Command.forCLI("exit", "Exits from MiniShell")
+						.addOption(Option.create("status", "Specifies the exit status")
+								.addAlias("s")
+								.addParameter("value", "Exit value", "0")
+								.build())
 						.build(context -> System.exit(0))) // end of exit command
 				.addCommand(Command.forCLI("exec", "Executes a command for the native runtime")
 						.addRequiredArgument("command", "The command to execute")
