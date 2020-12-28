@@ -1,4 +1,4 @@
-forMain# ReadyCLI: A framework for fast building of command-line interfaces in Java
+# ReadyCLI: A framework for quick building of command-line interfaces in Java
 The next two sections go directly to the core, showing you how to do argument parsing and how to build CLIs with ReadyCLI through two examples. The other sections, describe the main ideas behind ReadyCLI and introduce the main concepts.
 
 ## Overview example about argument parsing
