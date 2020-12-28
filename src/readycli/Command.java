@@ -43,10 +43,9 @@ import java.util.TreeSet;
  * 
  * A command is mainly composed by:<br>
  * <ul>
- * <li>A name: identifies the command, expecially in a {@link CLI};
+ * <li>A usage string: shows how to use the command;
  * <li>A description: is used for command documentation; it tells what the
  * command will do when invoked;
- * <li>A usage string: shows how to use the command;
  * <li>Required arguments: are the arguments necessary for command execution
  * (e.g. the source and the destination file names for a copy command).
  * <li>Options: optional parameters or flags that have a changeable default
@@ -78,8 +77,6 @@ import java.util.TreeSet;
  * If the command is implemented in a CLI, the usage string can be just equal to
  * the name of the command. <br>
  * The usage string can be an empty string. <br>
- * Some of these cases have some default solution, given by the creator methods
- * {@link #forMain(String, String)} and {@link #forCLI(String, String)}.
  * 
  * <h2>Required Arguments</h2>
  * 
@@ -99,7 +96,7 @@ import java.util.TreeSet;
  * 
  * <h2>Documentation option</h2>
  * 
- * As sayd above, the documentation option can have one or more aliases, to be
+ * As said above, the documentation option can have one or more aliases, to be
  * typed by the final user of the software. If the developer does not indicate a
  * documentation option alias during the command construction, the command will
  * not have documentation option available. The developer should always indicate
@@ -117,7 +114,6 @@ public final class Command implements Serializable {
 	private CommandExecutor commandExecutor;
 	private Command parent;
 	private String usageString;
-	private String name;
 	private String description;
 
 	private ArrayList<RequiredArgument> requiredArguments = new ArrayList<>();
@@ -130,66 +126,35 @@ public final class Command implements Serializable {
 
 	/**
 	 * Creates a new command with the given name, description, usage string and
-	 * document option aliases. The name of the command identifies it and allows a
-	 * {@link CLI} to address it when the user types it in.<br>
+	 * documentation option aliases.<br>
 	 * <br>
 	 * See {@link Command} for more details about usage strings.
 	 * 
-	 * @param name        the name of the command
-	 * @param description the human-readable description of the command
 	 * @param usageString the string that specify how to run the command
+	 * @param description the human-readable description of the command
 	 * @param docAliases  the aliases for the documentation option
 	 * @return a new {@link Command.Builder}
 	 * @see Command
+	 * @see #defaultDocs(String, String)
 	 */
-	public static Builder create(String name, String description, String usageString, String... docAliases) {
-		return new Builder(name, description, usageString).addDocumentationAliases(docAliases);
+	public static Builder create(String usageString, String description, String... docAliases) {
+		return new Builder(description, usageString).addDocumentationAliases(docAliases);
 	}
 
 	/**
-	 * Creates a new command, well suitable to parse main() method command-line
-	 * arguments, as the {@link #create(String, String, String, String...) create()}
-	 * method does. This method sets the usage string to an empty one.<br>
-	 * The new command will have the default documentation option aliases: '?',
-	 * '--help', '-h'. <br>
+	 * Creates a new command with the given name, description, usage string and with
+	 * the default documentation option aliases, that are '?', '-h' and '--help'.
 	 * <br>
-	 * See {@link Command} for more details about usage strings and documentation
-	 * option.
+	 * <br>
+	 * See {@link Command} for more details about usage strings.
 	 * 
-	 * @param name        the name of the command
+	 * @param usageString the string that specify how to run the command
 	 * @param description the human-readable description of the command
 	 * @return a new {@link Command.Builder}
 	 * @see Command
 	 */
-	public static Builder forMain(String name, String description) {
-		return create(name, description, "", "?", "--help", "-h"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-	}
-
-	/**
-	 * Creates a new command well suitable for CLIs, as the
-	 * {@link #create(String, String, String, String...) create()} method does. This
-	 * method sets the usage string to be equal to the command name.<br>
-	 * The new command will have the default documentation option aliases: '?',
-	 * '--help', '-h'. <br>
-	 * See {@link Command} for more details about usage strings and documentation
-	 * option.
-	 * 
-	 * @param name        the name of the command
-	 * @param description the human-readable description of the command
-	 * @return a new {@link Command.Builder}
-	 * @see Command
-	 */
-	public static Builder forCLI(String name, String description) {
-		return create(name, description, name, "?", "--help", "-h"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-	}
-
-	/**
-	 * Gets the name of the command.
-	 * 
-	 * @return the name as string.
-	 */
-	public String getName() {
-		return name;
+	public static Builder defaultDocs(String usageString, String description) {
+		return new Builder(description, usageString).addDocumentationAliases("?", "-h", "--help");
 	}
 
 	/**
@@ -520,7 +485,6 @@ public final class Command implements Serializable {
 			// print command description
 			{
 				output.println(Messages.getString("Command.2")); //$NON-NLS-1$
-				output.print('\t' + name + ' ' + '-' + ' ');
 				output.println(description);
 				output.println();
 			}
@@ -623,7 +587,7 @@ public final class Command implements Serializable {
 				output.println(Messages.getString("Command.23")); //$NON-NLS-1$
 				for (Entry<String, Command> entry : subCommands.entrySet()) {
 					Command subCommand = entry.getValue();
-					output.printf("\t%s: %s", subCommand.getName(), subCommand.getDescription()); //$NON-NLS-1$
+					output.printf("\t%s: %s", entry.getKey(), subCommand.getDescription()); //$NON-NLS-1$
 					output.printf(Messages.getString("Command.1"), //$NON-NLS-1$
 							subCommand.getDocumentationAliases());
 					output.println();
@@ -728,7 +692,7 @@ public final class Command implements Serializable {
 
 	/**
 	 * Class used to build a new {@link Command command}. To instantiate this class
-	 * use the {@link Command#create(String, String, String, String...)} method.
+	 * use the {@link Command#create(String, String, String...)} method.
 	 * 
 	 * @author Salvatore Giampa'
 	 *
@@ -757,12 +721,7 @@ public final class Command implements Serializable {
 				throw new IllegalArgumentException("The command has been already built."); //$NON-NLS-1$
 		}
 
-		private Builder(String name, String description, String usageString) {
-			final String NAME_REGEX = "[a-zA-Z][a-zA-Z0-9\\-]*"; //$NON-NLS-1$
-			if (!name.matches(NAME_REGEX))
-				throw new IllegalArgumentException(
-						"The command name must match the following regular expression: " + NAME_REGEX); //$NON-NLS-1$
-			command.name = name;
+		private Builder(String description, String usageString) {
 			command.description = description;
 			command.usageString = usageString;
 		}
@@ -886,6 +845,7 @@ public final class Command implements Serializable {
 		 * command, and these can expose other sub-commands that are sub-commands of
 		 * third level respect to the current command, and so on.
 		 * 
+		 * @param name       the name used to invoke the sub-command
 		 * @param subCommand the {@link Command sub-command} to add.
 		 * @return this same {@link Builder builder}
 		 * @throws IllegalStateException if the name of the given sub-command is already
@@ -893,11 +853,15 @@ public final class Command implements Serializable {
 		 *                               sub-command, documentation alias or if the
 		 *                               command has been already built.
 		 */
-		public Builder addSubCommand(Command subCommand) throws IllegalStateException {
+		public Builder addSubCommand(String name, Command subCommand) throws IllegalStateException {
 			checkState();
-			checkName(subCommand.name);
+			checkName(name);
+			final String NAME_REGEX = "[a-zA-Z][a-zA-Z0-9\\-]*"; //$NON-NLS-1$
+			if (!name.matches(NAME_REGEX))
+				throw new IllegalArgumentException(
+						"The command name must match the following regular expression: " + NAME_REGEX);
 			subCommand.parent = command;
-			command.subCommands.put(subCommand.getName(), subCommand);
+			command.subCommands.put(name, subCommand);
 			return this;
 		}
 
@@ -933,4 +897,5 @@ public final class Command implements Serializable {
 			return result;
 		}
 	}
+
 }

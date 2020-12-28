@@ -13,14 +13,14 @@ import readycli.Option;
 
 public class OverviewArgs {
 	public static void main(String[] args) {
-		Command.forMain("command-name", "command-description")
+		Command.defaultDocs("command-usage", "command-description")
 				.addRequiredArgument("file-name", "in file name") // a required argument
 				.addFlag("myflag", "an example flag") // an optional flag (true if specified, false otherwise)
 				.addOption(Option.create("myoption", "an example option") // an option
 						.addParameter("p1", "parameter 1 of --myoption", "default-value-of-p1")
 						.addParameter("p2", "parameter 2 of --myoption", "myoption-p2-default")
 						.build())
-				.addSubCommand(Command.forCLI("my-sub-command", "an example sub-command")
+				.addSubCommand("my-sub-command", Command.defaultDocs("my-sub-command", "an example sub-command")
 						.addRequiredArgument("text-file", "a required argument of my-sub-command")
 						.build(context -> {
 							String textFile = context.getArgument("text-file");
@@ -66,7 +66,7 @@ public class OverviewCLI {
 	public static void main(String[] args) {
 		CLI cli = CLI.create("CLI Overview", "insert a command> ");
 
-		cli.addCommand(Command.forCLI("my-command", "A command for my CLI")
+		cli.addCommand("my-command", Command.defaultDocs("my-command", "A command for my CLI")
 				.addOption(Option.create("opt", "An option of my-command")
 						.addAlias("o")
 						.addParameter("my-param", "A parameter for --opt", "my default value")
@@ -75,14 +75,14 @@ public class OverviewCLI {
 					context.out.println("arguments: " + context.arguments); // print required arguments
 					context.out.println("options: " + context.options); // print options
 				})) // end of "my-command" command
-				.addCommand(Command.forCLI("set-prompt", "Set a prompt for my CLI")
+				.addCommand("set-prompt", Command.defaultDocs("set-prompt", "Set a prompt for my CLI")
 						.addRequiredArgument("new-prompt", "The new prompt to set")
 						.build(context -> { // build the "set-prompt" command
 							String newPrompt = context.getArgument("new-prompt");
 							// access the CLI itself and modifies it from this lambda
 							cli.setCommandPrompt(newPrompt + "> ");
 						})) // end of "set-prompt" command
-				.addCommand(Command.forCLI("exit", "Exits the program")
+				.addCommand("exit", Command.defaultDocs("exit", "Exits the program")
 						.build(context -> System.exit(0))); // end of exit command
 
 		cli.execute(); // executes the CLI on the standard I/O

@@ -97,13 +97,18 @@ public final class CLI implements Serializable {
 	/**
 	 * Adds a command to the {@link CLI}.
 	 * 
+	 * @param name    the name used to invoke the command
 	 * @param command the {@link Command command} to add
 	 * @return this same {@link CLI} object
 	 */
-	public synchronized CLI addCommand(Command command) {
-		if (commands.containsKey(command.getName()))
-			throw new IllegalStateException(String.format("Command name \"%s\" already assigned.", command.getName())); //$NON-NLS-1$
-		commands.put(command.getName(), command);
+	public synchronized CLI addCommand(String name, Command command) {
+		if (commands.containsKey(name))
+			throw new IllegalStateException(String.format("Command name \"%s\" already assigned.", name)); //$NON-NLS-1$
+		final String NAME_REGEX = "[a-zA-Z][a-zA-Z0-9\\-]*"; //$NON-NLS-1$
+		if (!name.matches(NAME_REGEX))
+			throw new IllegalArgumentException(
+					"The command name must match the following regular expression: " + NAME_REGEX);
+		commands.put(name, command);
 		return this;
 	}
 
@@ -168,9 +173,10 @@ public final class CLI implements Serializable {
 	public void printHelp(PrintStream output) {
 		output.println(Messages.getString("CLI.1")); //$NON-NLS-1$
 		for (Entry<String, Command> entry : commands.entrySet()) {
+			String name = entry.getKey();
 			Command command = entry.getValue();
 
-			output.printf(Messages.getString("CLI.2"), command.getName(), command.getDescription(), //$NON-NLS-1$
+			output.printf(Messages.getString("CLI.2"), name, command.getDescription(), //$NON-NLS-1$
 					command.getDocumentationAliases());
 		}
 		output.println(Messages.getString("CLI.3")); //$NON-NLS-1$

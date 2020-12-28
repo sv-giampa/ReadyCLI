@@ -28,7 +28,7 @@ public class OverviewCLI {
 		Locale.setDefault(Locale.ENGLISH);
 		CLI cli = CLI.create("CLI Overview", "insert a command> ");
 
-		cli.addCommand(Command.forCLI("my-command", "A command for my CLI")
+		cli.addCommand("my-command", Command.defaultDocs("my-command", "A command for my CLI")
 				.addOption(Option.create("opt", "An option of my-command")
 						.addAlias("o")
 						.addParameter("my-param", "A parameter for --opt", "my default value")
@@ -37,14 +37,14 @@ public class OverviewCLI {
 					context.out.println("arguments: " + context.arguments); // print required arguments
 					context.out.println("options: " + context.options); // print options
 				})) // end of "my-command" command
-				.addCommand(Command.forCLI("set-prompt", "Set a prompt for my CLI")
+				.addCommand("set-prompt", Command.defaultDocs("set-prompt", "Set a prompt for my CLI")
 						.addRequiredArgument("new-prompt", "The new prompt to set")
 						.build(context -> { // build the "set-prompt" command
 							String newPrompt = context.getArgument("new-prompt");
 							// access the CLI itself and modifies it from this lambda
 							cli.setCommandPrompt(newPrompt + "> ");
 						})) // end of "set-prompt" command
-				.addCommand(Command.forCLI("exit", "Exits the program")
+				.addCommand("exit", Command.defaultDocs("exit", "Exits the program")
 						.build(context -> System.exit(0))); // end of exit command
 
 		cli.execute(); // executes the CLI on the standard I/O
